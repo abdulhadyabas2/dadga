@@ -1,0 +1,9 @@
+# Netlify proxy rules
+# POST /transcribe → proxied to real API server-side (bypasses CORS)
+/transcribe   https://stt.roshnaisunat.com/transcribe   200
+
+# /login → Netlify serverless function
+/login        /.netlify/functions/login                  200
+
+# Block direct access to users.json
+/users.json   /index.html                                404

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>داگا — چوونەژوورەوە</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #08091a;
+      --bg-glass: rgba(255,255,255,0.05);
+      --border-glass: rgba(255,255,255,0.1);
+      --purple: #7c3aed;
+      --purple-light: #a78bfa;
+      --purple-glow: rgba(124,58,237,0.4);
+      --blue: #2563eb;
+      --accent-grad: linear-gradient(135deg,#7c3aed 0%,#2563eb 100%);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --danger: #ef4444;
+      --success: #10b981;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --shadow-glass: 0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.08);
+      --font-primary: 'Noto Sans Arabic','Inter',sans-serif;
+      --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+
+    body {
+      font-family: var(--font-primary);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      direction: rtl;
+    }
+
+    /* ── Animated background orbs ── */
+    .bg-orbs {
+      position: fixed; inset: 0; z-index: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px);
+      animation: drift 20s ease-in-out infinite;
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle,rgba(124,58,237,0.22) 0%,transparent 70%);
+      top: -200px; right: -100px; animation-duration: 18s;
+    }
+    .orb-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle,rgba(37,99,235,0.18) 0%,transparent 70%);
+      bottom: -150px; left: -100px; animation-duration: 24s; animation-delay: -8s;
+    }
+    .orb-3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle,rgba(6,182,212,0.12) 0%,transparent 70%);
+      top: 40%; left: 40%; animation-duration: 30s; animation-delay: -15s;
+    }
+    @keyframes drift {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-30px) scale(1.05); }
+      66% { transform: translate(-30px,20px) scale(0.97); }
+    }
+
+    /* ── Login card ── */
+    .login-wrapper {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 420px;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: var(--shadow-glass);
+      padding: 40px 36px 36px;
+      animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Brand */
+    .login-brand {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+      margin-bottom: 32px;
+    }
+    .brand-logo {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--accent-grad);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 30px var(--purple-glow);
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+      0%,100% { box-shadow: 0 0 30px var(--purple-glow); }
+      50% { box-shadow: 0 0 50px var(--purple-glow), 0 0 80px rgba(124,58,237,0.2); }
+    }
+    .brand-logo svg { width: 34px; height: 34px; }
+
+    .login-brand h1 {
+      font-size: 26px; font-weight: 700;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login-brand p {
+      font-size: 13px; color: var(--text-muted);
+      text-align: center; line-height: 1.5;
+    }
+
+    /* Form */
+    .login-form { display: flex; flex-direction: column; gap: 18px; }
+
+    .field-group {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .field-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .field-input-wrap {
+      position: relative;
+    }
+    .field-icon {
+      position: absolute;
+      right: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .field-input {
+      width: 100%;
+      padding: 12px 42px 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: var(--font-primary);
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+    }
+    .field-input::placeholder { color: var(--text-muted); }
+    .field-input:focus {
+      border-color: var(--purple);
+      background: rgba(124,58,237,0.06);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    /* Toggle password visibility */
+    .toggle-pw {
+      position: absolute;
+      left: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-muted);
+      cursor: pointer; padding: 4px;
+      border-radius: 4px;
+      transition: color var(--transition);
+    }
+    .toggle-pw:hover { color: var(--purple-light); }
+
+    /* Error message */
+    .login-error {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: var(--radius-sm);
+      color: #fca5a5;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+    .login-error.show {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+
+    /* Submit button */
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent-grad);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-family: var(--font-primary);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+      position: relative; overflow: hidden;
+      margin-top: 4px;
+    }
+    .btn-login::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--transition);
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,58,237,0.5); }
+    .btn-login:hover::after { background: rgba(255,255,255,0.06); }
+    .btn-login:active { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-login .btn-text { transition: opacity 0.2s; }
+    .btn-login .btn-spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-login.loading .btn-text { display: none; }
+    .btn-login.loading .btn-spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer hint */
+    .login-footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .login-footer strong { color: var(--purple-light); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Brand -->
+      <div class="login-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 40 40" fill="none">
+            <path d="M12 16a8 8 0 0016 0V10a8 8 0 10-16 0v6z" fill="white" opacity="0.9"/>
+            <path d="M8 16a12 12 0 0024 0M20 30v4M16 34h8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1>داگا</h1>
+        <p>پلاتفۆرمی وەرگێڕانی دەنگ بۆ نووسین<br/>تکایە بچووەژوورەوە</p>
+      </div>
+
+      <!-- Form -->
+      <form class="login-form" id="loginForm" novalidate>
+
+        <!-- Error banner -->
+        <div class="login-error" id="loginError">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          <span id="loginErrorText">ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە</span>
+        </div>
+
+        <!-- Username -->
+        <div class="field-group">
+          <label class="field-label" for="username">ناوی بەکارهێنەر</label>
+          <div class="field-input-wrap">
+            <div class="field-icon">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <input
+              type="text" id="username" name="username"
+              class="field-input" placeholder="ناوی بەکارهێنەر بنووسە"
+              autocomplete="username" required
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <label class="field-label" for="password">وشەی نهێنی</label>
+          <div class="field-input-wrap">
+            <div class="field-icon">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <input
+              type="password" id="password" name="password"
+              class="field-input" placeholder="وشەی نهێنی بنووسە"
+              autocomplete="current-password" required
+            />
+            <button type="button" class="toggle-pw" id="togglePw" title="پیشاندان/شاردنەوە">
+              <svg id="eyeIcon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span class="btn-text">چوونەژوورەوە</span>
+          <div class="btn-spinner"></div>
+        </button>
+
+      </form>
+
+      <div class="login-footer">
+        داگا — <strong>Kurdish Voice Transcription</strong><br/>
+        &copy; 2025 · هەموو مافەکان پارێزراون
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const SESSION_KEY = 'dadga_auth';
+
+    // If already logged in, go straight to app
+    if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+      location.replace('index.html');
+    }
+
+    // Toggle password visibility
+    const pwInput   = document.getElementById('password');
+    const toggleBtn = document.getElementById('togglePw');
+    const eyeIcon   = document.getElementById('eyeIcon');
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = pwInput.type === 'password';
+      pwInput.type = isHidden ? 'text' : 'password';
+      eyeIcon.innerHTML = isHidden
+        ? `<path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/><path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.064 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>`
+        : `<path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>`;
+    });
+
+    // Form submit
+    const form     = document.getElementById('loginForm');
+    const errorBox = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+
+    function showError(msg) {
+      document.getElementById('loginErrorText').textContent = msg;
+      errorBox.classList.add('show');
+    }
+    function hideError() { errorBox.classList.remove('show'); }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showError('تکایە هەموو خانەکان پڕبکەرەوە');
+        return;
+      }
+
+      loginBtn.classList.add('loading');
+      loginBtn.disabled = true;
+
+      try {
+        // POST credentials to the server — server checks users.json
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          sessionStorage.setItem(SESSION_KEY, 'true');
+          sessionStorage.setItem(SESSION_KEY + '_user', data.username);
+          // Animate out then redirect
+          document.querySelector('.login-card').style.transition = 'opacity 0.3s, transform 0.3s';
+          document.querySelector('.login-card').style.opacity = '0';
+          document.querySelector('.login-card').style.transform = 'scale(0.96)';
+          setTimeout(() => location.replace('index.html'), 300);
+        } else {
+          loginBtn.classList.remove('loading');
+          loginBtn.disabled = false;
+          showError(data.message || 'ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە');
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      } catch (err) {
+        loginBtn.classList.remove('loading');
+        loginBtn.disabled = false;
+        showError('کێشە لە پەیوەندی بە سێرڤەرەوە. تکایە دووبارە هەوڵبدەرەوە.');
+      }
+    });
+
+    // Clear error when typing
+    ['username', 'password'].forEach(id => {
+      document.getElementById(id).addEventListener('input', hideError);
+    });
+  </script>
+
+</body>
+</html>

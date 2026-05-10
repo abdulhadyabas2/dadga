@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>داگا — پلاتفۆرمی وەرگێڕانی دەنگ بۆ نووسین</title>
+  <meta name="description" content="پلاتفۆرمی پیشەیی وەرگێڕانی دەنگ بۆ نووسین بە زمانی کوردی" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Quill Rich Text Editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <!-- docx generation -->
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+  <!-- FileSaver -->
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="20" fill="url(#brandGrad)"/>
+          <path d="M14 16a6 6 0 1 1 12 0v6a6 6 0 1 1-12 0v-6z" fill="white" opacity="0.9"/>
+          <rect x="17" y="29" width="6" height="3" rx="1.5" fill="white" opacity="0.9"/>
+          <rect x="13" y="31" width="14" height="2" rx="1" fill="white" opacity="0.7"/>
+          <defs>
+            <linearGradient id="brandGrad" x1="0" y1="0" x2="40" y2="40">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#2563eb"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">داگا</span>
+        <span class="brand-sub">وەرگێڕانی دەنگ</span>
+      </div>
+    </div>
+
+    <nav class="navbar-tabs">
+      <button class="tab-btn active" data-tab="recorder" id="tab-recorder">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M7 4a3 3 0 016 0v6a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"/></svg>
+        تۆمارکردن
+      </button>
+      <button class="tab-btn" data-tab="editor" id="tab-editor">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+        وێرایەر
+      </button>
+      <button class="tab-btn" data-tab="history" id="tab-history">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        مێژوو
+      </button>
+    </nav>
+
+    <div class="navbar-actions">
+      <div class="api-status" id="apiStatus">
+        <div class="status-dot"></div>
+        <span>سیستەم ئامادەیە</span>
+      </div>
+      <button class="btn-icon" id="themeToggle" title="گۆڕانی ڕووکەڵ">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+      </button>
+      <button class="btn-icon btn-logout" id="logoutBtn" title="چوونەدەرەوە">
+        <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ══════════ RECORDER TAB ══════════ -->
+    <section class="tab-panel active" id="panel-recorder">
+      <div class="recorder-layout">
+
+        <!-- Left Panel: Recording Controls -->
+        <aside class="control-panel glass-card">
+          <h2 class="panel-title">کۆنتڕۆڵی تۆمارکردن</h2>
+
+          <!-- VAD Settings -->
+          <div class="settings-group">
+            <label class="settings-label">ئاستی دەنگ VAD</label>
+            <div class="slider-wrapper">
+              <input type="range" id="vadThreshold" min="1" max="50" value="15" class="slider" />
+              <span class="slider-value" id="vadThresholdVal">15</span>
+            </div>
+          </div>
+          <div class="settings-group">
+            <label class="settings-label">بەستنی دواوەخت (ms)</label>
+            <div class="slider-wrapper">
+              <input type="range" id="silenceDelay" min="500" max="3000" step="100" value="2000" class="slider" />
+              <span class="slider-value" id="silenceDelayVal">2000</span>
+            </div>
+          </div>
+
+
+          <div class="settings-group">
+            <label class="settings-label">زمان</label>
+            <select class="select-input" id="langSelect">
+              <option value="ku">کوردی</option>
+              <option value="ar">عربی</option>
+              <option value="en">ئینگلیزی</option>
+            </select>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Stats -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-value" id="statSegments">0</span>
+              <span class="stat-label">بەش</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statWords">0</span>
+              <span class="stat-label">وشە</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="statTime">00:00</span>
+              <span class="stat-label">کات</span>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Center: Main Mic + Visualizer -->
+        <div class="recorder-center">
+          <!-- Big Circle Mic Button -->
+          <div class="mic-container" id="micContainer">
+            <div class="mic-ring ring-3"></div>
+            <div class="mic-ring ring-2"></div>
+            <div class="mic-ring ring-1"></div>
+            <button class="mic-btn" id="micBtn" title="دەستپێکردنی تۆمارکردن">
+              <svg class="mic-icon" viewBox="0 0 40 40" fill="none">
+                <path d="M12 16a8 8 0 0016 0V10a8 8 0 10-16 0v6z" fill="currentColor" opacity="0.9"/>
+                <path d="M8 16a12 12 0 0024 0M20 30v4M16 34h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <svg class="stop-icon hidden" viewBox="0 0 40 40" fill="none">
+                <rect x="10" y="10" width="20" height="20" rx="3" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Status Label -->
+          <div class="recorder-status-label" id="recorderStatusLabel">
+            <div class="status-indicator" id="statusIndicator">
+              <div class="status-pulse"></div>
+              <span id="statusText">بۆ دەستپێکردن کلیک بکە</span>
+            </div>
+          </div>
+
+          <!-- Audio Waveform Visualizer -->
+          <div class="visualizer-wrapper">
+            <canvas id="waveCanvas" width="700" height="100"></canvas>
+          </div>
+
+          <!-- Level Meter -->
+          <div class="level-meter-wrapper">
+            <span class="level-label">ئاستی دەنگ</span>
+            <div class="level-bar-track">
+              <div class="level-bar-fill" id="levelFill"></div>
+              <div class="level-threshold-marker" id="thresholdMarker"></div>
+            </div>
+          </div>
+
+          <!-- Quick action bar -->
+          <div class="quick-actions">
+            <button class="quick-btn" id="clearTranscriptBtn" title="پاکردنەوەی دەق">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              پاکردنەوە
+            </button>
+            <button class="quick-btn" id="copyTranscriptBtn" title="کۆپیکردن">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"/><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"/></svg>
+              کۆپی
+            </button>
+            <button class="quick-btn" id="sendToEditorBtn" title="ناردن بۆ وێرایەر">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+              ناردن بۆ وێرایەر
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Live Transcript -->
+        <aside class="transcript-panel glass-card">
+          <div class="transcript-header">
+            <h2 class="panel-title">دەقی زیندوو</h2>
+            <div class="transcript-badge" id="transcriptBadge">ئامادە</div>
+          </div>
+          <div class="transcript-scroll" id="transcriptScroll">
+            <div class="transcript-placeholder" id="transcriptPlaceholder">
+              <svg viewBox="0 0 60 60" fill="none">
+                <circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4" opacity="0.3"/>
+                <path d="M18 22a12 12 0 0124 0v10a12 12 0 01-24 0V22z" fill="currentColor" opacity="0.15"/>
+                <path d="M12 26a18 18 0 0036 0M30 42v4M24 46h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>
+              </svg>
+              <p>دەقی وەرگێڕدراو لێرەدا دەردەکەوێت</p>
+            </div>
+            <div class="transcript-segments" id="transcriptSegments"></div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ══════════ EDITOR TAB ══════════ -->
+    <section class="tab-panel" id="panel-editor">
+      <div class="editor-layout">
+        <!-- Toolbar -->
+        <div class="editor-toolbar glass-card">
+          <div class="toolbar-group">
+            <button class="toolbar-btn" id="exportTxt" title="ناردنەوەی TXT">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <span>TXT</span>
+            </button>
+            <button class="toolbar-btn" id="exportDocx" title="ناردنەوەی Word">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              <span>Word</span>
+            </button>
+          </div>
+          <div class="toolbar-group">
+            <button class="toolbar-btn" id="clearEditorBtn" title="پاکردنەوە">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+              <span>پاکردنەوە</span>
+            </button>
+            <button class="toolbar-btn" id="printEditorBtn" title="چاپکردن">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd"/></svg>
+              <span>چاپکردن</span>
+            </button>
+          </div>
+          <div class="toolbar-info">
+            <span id="editorWordCount">0 وشە</span>
+            <span class="divider-v"></span>
+            <span id="editorCharCount">0 پیت</span>
+          </div>
+        </div>
+
+        <!-- Quill Editor -->
+        <div class="editor-wrapper glass-card">
+          <div id="quillToolbar">
+            <span class="ql-formats">
+              <select class="ql-font"></select>
+              <select class="ql-size">
+                <option value="small">بچووک</option>
+                <option selected>ئاسایی</option>
+                <option value="large">گەورە</option>
+                <option value="huge">زۆر گەورە</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-bold"></button>
+              <button class="ql-italic"></button>
+              <button class="ql-underline"></button>
+              <button class="ql-strike"></button>
+            </span>
+            <span class="ql-formats">
+              <select class="ql-color"></select>
+              <select class="ql-background"></select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered"></button>
+              <button class="ql-list" value="bullet"></button>
+              <button class="ql-indent" value="-1"></button>
+              <button class="ql-indent" value="+1"></button>
+            </span>
+            <span class="ql-formats">
+              <select class="ql-align"></select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-link"></button>
+              <button class="ql-blockquote"></button>
+              <button class="ql-clean"></button>
+            </span>
+          </div>
+          <div id="quillEditor" dir="rtl"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ HISTORY TAB ══════════ -->
+    <section class="tab-panel" id="panel-history">
+      <div class="history-layout">
+        <div class="history-header glass-card">
+          <h2 class="panel-title">مێژووی وەرگێڕانەکان</h2>
+          <div class="history-actions">
+            <button class="btn-ghost" id="clearHistoryBtn">پاکردنەوەی مێژوو</button>
+            <button class="toolbar-btn" id="exportHistoryBtn">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              هەموو هەناردەکردن
+            </button>
+          </div>
+        </div>
+        <div class="history-list" id="historyList">
+          <div class="empty-state" id="historyEmpty">
+            <svg viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="2" opacity="0.15"/>
+              <path d="M25 30a15 15 0 0130 0v12a15 15 0 01-30 0V30z" fill="currentColor" opacity="0.1"/>
+            </svg>
+            <h3>مێژوو بەتاڵە</h3>
+            <p>دەقی وەرگێڕدراوەکانت لێرەدا پاشەکەوت دەبن</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="loading-spinner">
+      <div class="spinner-ring"></div>
+      <span>وەرگێڕان...</span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

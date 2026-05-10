@@ -1,0 +1,13 @@
+{
+  "name": "dadga",
+  "version": "1.0.0",
+  "description": "Kurdish Voice Transcription Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo No build step required. This is a plain HTML/CSS/JS app. && node server.js"
+  },
+  "keywords": ["kurdish", "transcription", "voice", "asr"],
+  "author": "Dadga",
+  "license": "ISC"
+}
